@@ -29,6 +29,9 @@ public class BoardController {
   @Autowired
   private BoardService boardService;
   
+  @Autowired
+  private javax.sql.DataSource dataSource;
+  
   /**
    * 게시글 목록 조회
    * @param request
@@ -273,6 +276,22 @@ public class BoardController {
   @GetMapping(value = "/alive")
   public String alieveCheck()  throws Exception{
     return "Alive";
+  }
+
+  /**
+   * DB 연결 확인
+   * @return
+   * @throws Exception
+   */
+  @ResponseBody
+  @GetMapping(value = "/health/db")
+  public String checkDbConnection() throws Exception {
+    try (java.sql.Connection conn = dataSource.getConnection()) {
+      return "✅ DB 연결 성공";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "❌ DB 연결 실패: " + e.getMessage();
+    }
   }
   
 }
